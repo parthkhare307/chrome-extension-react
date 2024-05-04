@@ -1,16 +1,19 @@
-
+import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 
 function App() {
+
+  const [colour,setColour] =useState<string>("")
   
   const onclick = async()=>{
-      let[tab] = await chrome.tabs.query({active:true});
-      chrome.scripting.executeScript({
+      const [tab] = await chrome.tabs.query({active:true});
+      chrome.scripting.executeScript<string[],void>({
         target:{ tabId : tab.id!},
-        func: ()=>{
-            alert("Hello from my extension!");
+        args: [colour],
+        func: (colour)=>{
+            document.body.style.backgroundColor = colour;
         }
       });
   }
@@ -27,6 +30,7 @@ function App() {
       </div>
       <h1>My Extension</h1>
       <div className="card">
+        <input type="color" onChange={(e)=>{setColour(e.currentTarget.value)}} />
         <button onClick={onclick}>
           Click Here
         </button>
